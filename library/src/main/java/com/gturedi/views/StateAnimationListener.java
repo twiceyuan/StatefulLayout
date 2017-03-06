@@ -6,7 +6,7 @@ import android.view.animation.Animation;
  * simple class to reduce callback hell
  */
 @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
-public class CustomAnimationListener
+public class StateAnimationListener
         implements Animation.AnimationListener {
 
     @Override

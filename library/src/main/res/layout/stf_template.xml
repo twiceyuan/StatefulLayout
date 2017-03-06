@@ -1,38 +1,12 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:id="@+id/stContainer"
         style="@style/stfContainer"
         android:visibility="gone"
-        tools:visibility="visible"
-        >
-
-        <ProgressBar
-            android:id="@+id/stProgress"
-            style="@style/stfProgress"
-            />
-
-        <ImageView
-            android:id="@+id/stImage"
-            app:srcCompat="@drawable/stf_ic_error"
-            style="@style/stfImage"
-            />
-
-        <TextView
-            android:id="@+id/stMessage"
-            android:text="@string/stfErrorMessage"
-            style="@style/stfMessage"
-            />
-
-        <Button
-            android:id="@+id/stButton"
-            android:text="@string/stfButtonText"
-            style="@style/stfButton"
-            />
+        tools:visibility="visible">
 
     </LinearLayout>
 

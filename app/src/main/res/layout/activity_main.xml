@@ -72,8 +72,8 @@
         android:layout_margin="10dp"
         android:background="#e2e2e2"
         app:stfAnimationEnabled="true"
-        app:stfInAnimation="@android:anim/slide_in_left"
-        app:stfOutAnimation="@android:anim/slide_out_right"
+        app:stfInAnimation="@android:anim/fade_in"
+        app:stfOutAnimation="@android:anim/fade_out"
         >
 
         <LinearLayout
