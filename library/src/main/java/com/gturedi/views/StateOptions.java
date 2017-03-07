@@ -1,5 +1,6 @@
 package com.gturedi.views;
 
+import android.support.annotation.LayoutRes;
 import android.view.View;
 
 import java.io.Serializable;
@@ -13,11 +14,14 @@ public abstract class StateOptions implements Serializable {
 
     View stateView;
 
-    protected StateOptions(View stateView) {
-        this.stateView = stateView;
+    protected abstract @LayoutRes int layoutId();
+
+    protected void init(View rootView) {
     }
 
-    protected abstract void init();
+    void init() {
+        init(stateView);
+    }
 
     public View rootView() {
         return stateView;

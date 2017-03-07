@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 /**
@@ -28,8 +29,8 @@ public class StatefulLayout extends LinearLayout {
     @AnimRes private int     inAnimation;
     @AnimRes private int     outAnimation;
 
-    private View         content;
-    private LinearLayout stContainer;
+    private View        content;
+    private FrameLayout stContainer;
 
     public StatefulLayout(Context context) {
         this(context, null);
@@ -80,7 +81,7 @@ public class StatefulLayout extends LinearLayout {
         setOrientation(VERTICAL);
         content = getChildAt(0); // assume first child as content
         LayoutInflater.from(getContext()).inflate(R.layout.stf_template, this, true);
-        stContainer = (LinearLayout) findViewById(R.id.stContainer);
+        stContainer = (FrameLayout) findViewById(R.id.stContainer);
     }
 
     // loading //
@@ -116,7 +117,7 @@ public class StatefulLayout extends LinearLayout {
     // empty //
 
     public void showLoading(String message) {
-        showCustom(new SimpleStateOptions(getContext())
+        showCustom(new SimpleStateOptions()
                 .message(message)
                 .loading());
     }
@@ -132,7 +133,7 @@ public class StatefulLayout extends LinearLayout {
     // error //
 
     public void showEmpty(String message) {
-        showCustom(new SimpleStateOptions(getContext())
+        showCustom(new SimpleStateOptions()
                 .message(message)
                 .image(R.drawable.stf_ic_empty));
     }
@@ -148,7 +149,7 @@ public class StatefulLayout extends LinearLayout {
     // offline
 
     public void showError(String message, OnClickListener clickListener) {
-        showCustom(new SimpleStateOptions(getContext())
+        showCustom(new SimpleStateOptions()
                 .message(message)
                 .image(R.drawable.stf_ic_error)
                 .buttonText(str(R.string.stfButtonText))
@@ -166,7 +167,7 @@ public class StatefulLayout extends LinearLayout {
     // location off //
 
     public void showOffline(String message, OnClickListener clickListener) {
-        showCustom(new SimpleStateOptions(getContext())
+        showCustom(new SimpleStateOptions()
                 .message(message)
                 .image(R.drawable.stf_ic_offline)
                 .buttonText(str(R.string.stfButtonText))
@@ -184,7 +185,7 @@ public class StatefulLayout extends LinearLayout {
     // custom //
 
     public void showLocationOff(String message, OnClickListener clickListener) {
-        showCustom(new SimpleStateOptions(getContext())
+        showCustom(new SimpleStateOptions()
                 .message(message)
                 .image(R.drawable.stf_ic_location_off)
                 .buttonText(str(R.string.stfButtonText))
@@ -241,7 +242,11 @@ public class StatefulLayout extends LinearLayout {
 
     private void refreshContainer(StateOptions options) {
         stContainer.removeAllViews();
-        stContainer.addView(options.stateView);
+        if (options.stateView == null) {
+            options.stateView = LayoutInflater.from(getContext()).inflate(options.layoutId(), stContainer, true);
+        } else {
+            stContainer.addView(options.stateView);
+        }
         options.init();
     }
 

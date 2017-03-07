@@ -1,9 +1,7 @@
 package com.gturedi.views;
 
-import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,14 +25,6 @@ public class SimpleStateOptions extends StateOptions {
     private ImageView stImage;
     private TextView stMessage;
     private Button stButton;
-
-    public SimpleStateOptions(Context context) {
-        super(LayoutInflater.from(context).inflate(R.layout.stf_simple_state, null, false));
-        stProgress = (ProgressBar) stateView.findViewById(R.id.stProgress);
-        stImage = (ImageView) stateView.findViewById(R.id.stImage);
-        stMessage = (TextView) stateView.findViewById(R.id.stMessage);
-        stButton = (Button) stateView.findViewById(R.id.stButton);
-    }
 
     public SimpleStateOptions image(@DrawableRes int val) {
         imageRes = val;
@@ -83,7 +73,17 @@ public class SimpleStateOptions extends StateOptions {
     }
 
     @Override
-    protected void init() {
+    protected int layoutId() {
+        return R.layout.stf_simple_state;
+    }
+
+    @Override
+    protected void init(View rootView) {
+        stProgress = (ProgressBar) stateView.findViewById(R.id.stProgress);
+        stImage = (ImageView) stateView.findViewById(R.id.stImage);
+        stMessage = (TextView) stateView.findViewById(R.id.stMessage);
+        stButton = (Button) stateView.findViewById(R.id.stButton);
+
         if (!TextUtils.isEmpty(getMessage())) {
             stMessage.setVisibility(View.VISIBLE);
             stMessage.setText(getMessage());

@@ -1,13 +1,10 @@
 package com.gturedi.app;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
-import com.gturedi.views.StateOptions;
 import com.gturedi.views.StatefulLayout;
 
 /**
@@ -57,17 +54,13 @@ public class MainActivity
     }
 
     public void custom(View view) {
-        stateful.showCustom(new CustomStateOptions(this));
-    }
-
-    private static class CustomStateOptions extends StateOptions {
-
-        private CustomStateOptions(Context context) {
-            super(LayoutInflater.from(context).inflate(R.layout.custom_state, null, false));
-        }
-
-        @Override
-        protected void init() {
-        }
+        CustomStateOptions options = new CustomStateOptions();
+        options.setOnOpenListener(new CustomStateOptions.OnOpenListener() {
+            @Override
+            public void open() {
+                stateful.showContent();
+            }
+        });
+        stateful.showCustom(options);
     }
 }
