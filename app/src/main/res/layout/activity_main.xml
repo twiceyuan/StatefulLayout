@@ -73,8 +73,7 @@
         android:background="#e2e2e2"
         app:stfAnimationEnabled="true"
         app:stfInAnimation="@android:anim/slide_in_left"
-        app:stfOutAnimation="@android:anim/slide_out_right"
-        >
+        app:stfOutAnimation="@android:anim/slide_out_right">
 
         <LinearLayout
             android:layout_width="match_parent"

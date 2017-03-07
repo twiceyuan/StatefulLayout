@@ -76,7 +76,7 @@ public class StatefulLayout extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (getChildCount() > 1) throw new IllegalStateException(MSG_ONE_CHILD);
+        if (getChildCount() != 1) throw new IllegalStateException(MSG_ONE_CHILD);
         if (isInEditMode()) return; // hide state views in designer
         setOrientation(VERTICAL);
         content = getChildAt(0); // assume first child as content
@@ -202,7 +202,6 @@ public class StatefulLayout extends LinearLayout {
     public void showCustom(final StateOptions options) {
         stContainer.clearAnimation();
         content.clearAnimation();
-
 
         stContainer.post(new Runnable() {
             @Override
