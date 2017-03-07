@@ -49,24 +49,29 @@ public class StatefulLayout extends LinearLayout {
         return animationEnabled;
     }
 
+    @SuppressWarnings("unused")
     public void setAnimationEnabled(boolean animationEnabled) {
         this.animationEnabled = animationEnabled;
     }
 
+    @SuppressWarnings("unused")
     @AnimRes
     public int getInAnimation() {
         return inAnimation;
     }
 
+    @SuppressWarnings("unused")
     public void setInAnimation(@AnimRes int anim) {
         inAnimation = anim;
     }
 
+    @SuppressWarnings("unused")
     @AnimRes
     public int getOutAnimation() {
         return outAnimation;
     }
 
+    @SuppressWarnings("unused")
     public void setOutAnimation(@AnimRes int anim) {
         outAnimation = anim;
     }
