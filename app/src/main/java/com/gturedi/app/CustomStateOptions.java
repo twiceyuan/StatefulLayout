@@ -6,13 +6,8 @@ import android.widget.Switch;
 
 import com.gturedi.views.StateOptions;
 
+@SuppressWarnings("ALL")
 public class CustomStateOptions extends StateOptions {
-
-    OnOpenListener mOnOpenListener;
-
-    public void setOnOpenListener(OnOpenListener onOpenListener) {
-        mOnOpenListener = onOpenListener;
-    }
 
     @Override
     protected int layoutId() {
@@ -25,15 +20,10 @@ public class CustomStateOptions extends StateOptions {
         switchTest.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && mOnOpenListener != null) {
-                    mOnOpenListener.open();
+                if (isChecked) {
+                    getAttachedStf().showContent();
                 }
             }
         });
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public interface OnOpenListener {
-        void open();
     }
 }

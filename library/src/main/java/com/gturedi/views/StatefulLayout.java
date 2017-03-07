@@ -244,6 +244,7 @@ public class StatefulLayout extends LinearLayout {
         stContainer.removeAllViews();
         if (options.stateView == null) {
             options.stateView = LayoutInflater.from(getContext()).inflate(options.layoutId(), stContainer, true);
+            options.setAttachedStf(this);
         } else {
             stContainer.addView(options.stateView);
         }

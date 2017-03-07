@@ -54,13 +54,6 @@ public class MainActivity
     }
 
     public void custom(View view) {
-        CustomStateOptions options = new CustomStateOptions();
-        options.setOnOpenListener(new CustomStateOptions.OnOpenListener() {
-            @Override
-            public void open() {
-                stateful.showContent();
-            }
-        });
-        stateful.showCustom(options);
+        stateful.showCustom(new CustomStateOptions());
     }
 }

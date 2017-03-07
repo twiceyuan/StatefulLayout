@@ -26,4 +26,14 @@ public abstract class StateOptions implements Serializable {
     public View rootView() {
         return stateView;
     }
+
+    private StatefulLayout mAttachedStf;
+
+    public void setAttachedStf(StatefulLayout attachedStf) {
+        mAttachedStf = attachedStf;
+    }
+
+    public StatefulLayout getAttachedStf() {
+        return mAttachedStf;
+    }
 }
