@@ -13,6 +13,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Android layout to show most common state templates like loading, empty, error etc. To do that all you need to is
  * wrap the target area(view) with StatefulLayout. For more information about usage look
@@ -20,17 +22,16 @@ import android.widget.LinearLayout;
  */
 public class StatefulLayout extends LinearLayout {
 
-    private static final String  MSG_ONE_CHILD        = "StatefulLayout must have one child!";
-    private static final boolean DEFAULT_ANIM_ENABLED = true;
-    private static final int     DEFAULT_IN_ANIM      = android.R.anim.fade_in;
-    private static final int     DEFAULT_OUT_ANIM     = android.R.anim.fade_out;
-
-    private          boolean animationEnabled;
-    @AnimRes private int     inAnimation;
-    @AnimRes private int     outAnimation;
-
-    private View        content;
-    private FrameLayout stContainer;
+    private static final String        MSG_ONE_CHILD        = "StatefulLayout must have one child!";
+    private static final boolean       DEFAULT_ANIM_ENABLED = true;
+    private static final int           DEFAULT_IN_ANIM      = android.R.anim.fade_in;
+    private static final int           DEFAULT_OUT_ANIM     = android.R.anim.fade_out;
+    private final        AtomicBoolean mContentIn           = new AtomicBoolean(false);
+    private          boolean     animationEnabled;
+    @AnimRes private int         inAnimation;
+    @AnimRes private int         outAnimation;
+    private          View        content;
+    private          FrameLayout stContainer;
 
     public StatefulLayout(Context context) {
         this(context, null);
@@ -71,12 +72,12 @@ public class StatefulLayout extends LinearLayout {
         return outAnimation;
     }
 
+    // content //
+
     @SuppressWarnings("unused")
     public void setOutAnimation(@AnimRes int anim) {
         outAnimation = anim;
     }
-
-    // content //
 
     @Override
     protected void onFinishInflate() {
@@ -89,27 +90,33 @@ public class StatefulLayout extends LinearLayout {
         stContainer = (FrameLayout) findViewById(R.id.stContainer);
     }
 
-    // loading //
-
     public void showContent() {
         if (isAnimationEnabled()) {
             if (stContainer.getVisibility() == VISIBLE) {
-                Animation outAnim = createOutAnimation();
-                outAnim.setAnimationListener(new StateAnimationListener() {
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        stContainer.setVisibility(GONE);
-                        content.setVisibility(VISIBLE);
-                        content.startAnimation(createInAnimation());
+                synchronized (mContentIn) {
+                    Animation outAnim = createOutAnimation();
+                    if (!mContentIn.get()) {
+                        outAnim.setAnimationListener(new StateAnimationListener() {
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                stContainer.setVisibility(GONE);
+                                content.setVisibility(VISIBLE);
+                                content.startAnimation(createInAnimation());
+                                mContentIn.set(false);
+                            }
+                        });
+                        stContainer.startAnimation(outAnim);
+                        mContentIn.set(true);
                     }
-                });
-                stContainer.startAnimation(outAnim);
+                }
             }
         } else {
             stContainer.setVisibility(GONE);
             content.setVisibility(VISIBLE);
         }
     }
+
+    // loading //
 
     public void showLoading() {
         showLoading(R.string.stfLoadingMessage);
