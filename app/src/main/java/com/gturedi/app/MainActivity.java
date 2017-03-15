@@ -9,11 +9,14 @@ import com.gturedi.views.StatefulLayout;
 
 /**
  * Created by gturedi on 17.02.2017.
+ *
+ * MainActivity
  */
-public class MainActivity
-        extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private StatefulLayout stateful;
+
+    private CustomStateOptions options = new CustomStateOptions();
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -54,6 +57,6 @@ public class MainActivity
     }
 
     public void custom(View view) {
-        stateful.showCustom(new CustomStateOptions());
+        stateful.showCustom(options);
     }
 }

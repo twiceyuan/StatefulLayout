@@ -8,6 +8,7 @@ import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -27,11 +28,13 @@ public class StatefulLayout extends LinearLayout {
     private static final int           DEFAULT_IN_ANIM      = android.R.anim.fade_in;
     private static final int           DEFAULT_OUT_ANIM     = android.R.anim.fade_out;
     private final        AtomicBoolean mContentIn           = new AtomicBoolean(false);
+    private final Object       mOptionsLock    = new Object();
     private          boolean     animationEnabled;
     @AnimRes private int         inAnimation;
     @AnimRes private int         outAnimation;
     private          View        content;
     private          FrameLayout stContainer;
+    private       StateOptions mCurrentOptions = null;
 
     public StatefulLayout(Context context) {
         this(context, null);
@@ -61,6 +64,8 @@ public class StatefulLayout extends LinearLayout {
         return inAnimation;
     }
 
+    // content //
+
     @SuppressWarnings("unused")
     public void setInAnimation(@AnimRes int anim) {
         inAnimation = anim;
@@ -72,12 +77,12 @@ public class StatefulLayout extends LinearLayout {
         return outAnimation;
     }
 
-    // content //
-
     @SuppressWarnings("unused")
     public void setOutAnimation(@AnimRes int anim) {
         outAnimation = anim;
     }
+
+    // loading //
 
     @Override
     protected void onFinishInflate() {
@@ -116,7 +121,7 @@ public class StatefulLayout extends LinearLayout {
         }
     }
 
-    // loading //
+    // empty //
 
     public void showLoading() {
         showLoading(R.string.stfLoadingMessage);
@@ -126,13 +131,13 @@ public class StatefulLayout extends LinearLayout {
         showLoading(str(resId));
     }
 
-    // empty //
-
     public void showLoading(String message) {
         showCustom(new SimpleStateOptions()
                 .message(message)
                 .loading());
     }
+
+    // error //
 
     public void showEmpty() {
         showEmpty(R.string.stfEmptyMessage);
@@ -142,13 +147,13 @@ public class StatefulLayout extends LinearLayout {
         showEmpty(str(resId));
     }
 
-    // error //
-
     public void showEmpty(String message) {
         showCustom(new SimpleStateOptions()
                 .message(message)
                 .image(R.drawable.stf_ic_empty));
     }
+
+    // offline
 
     public void showError(OnClickListener clickListener) {
         showError(R.string.stfErrorMessage, clickListener);
@@ -158,8 +163,6 @@ public class StatefulLayout extends LinearLayout {
         showError(str(resId), clickListener);
     }
 
-    // offline
-
     public void showError(String message, OnClickListener clickListener) {
         showCustom(new SimpleStateOptions()
                 .message(message)
@@ -167,6 +170,8 @@ public class StatefulLayout extends LinearLayout {
                 .buttonText(str(R.string.stfButtonText))
                 .buttonClickListener(clickListener));
     }
+
+    // location off //
 
     public void showOffline(OnClickListener clickListener) {
         showOffline(R.string.stfOfflineMessage, clickListener);
@@ -176,8 +181,6 @@ public class StatefulLayout extends LinearLayout {
         showOffline(str(resId), clickListener);
     }
 
-    // location off //
-
     public void showOffline(String message, OnClickListener clickListener) {
         showCustom(new SimpleStateOptions()
                 .message(message)
@@ -186,6 +189,8 @@ public class StatefulLayout extends LinearLayout {
                 .buttonClickListener(clickListener));
     }
 
+    // custom //
+
     public void showLocationOff(OnClickListener clickListener) {
         showLocationOff(R.string.stfLocationOffMessage, clickListener);
     }
@@ -193,8 +198,6 @@ public class StatefulLayout extends LinearLayout {
     public void showLocationOff(@StringRes int resId, OnClickListener clickListener) {
         showLocationOff(str(resId), clickListener);
     }
-
-    // custom //
 
     public void showLocationOff(String message, OnClickListener clickListener) {
         showCustom(new SimpleStateOptions()
@@ -212,6 +215,14 @@ public class StatefulLayout extends LinearLayout {
      */
     // helper methods //
     public void showCustom(final StateOptions options) {
+
+        synchronized (mOptionsLock) {
+            if (mCurrentOptions == options) {
+                return;
+            }
+            mCurrentOptions = options;
+        }
+
         stContainer.clearAnimation();
         content.clearAnimation();
 
@@ -254,12 +265,18 @@ public class StatefulLayout extends LinearLayout {
     private void refreshContainer(StateOptions options) {
         stContainer.removeAllViews();
         if (options.stateView == null) {
-            options.stateView = LayoutInflater.from(getContext()).inflate(options.layoutId(), stContainer, true);
-            options.setAttachedStf(this);
-        } else {
+            options.stateView = LayoutInflater.from(getContext()).inflate(options.layoutId(), null, false);
             stContainer.addView(options.stateView);
+            options.setAttachedStf(this);
+            options.init(options.stateView);
+        } else {
+            View stateView = options.stateView;
+            ViewGroup parent = (ViewGroup) stateView.getParent();
+            if (parent == null) {
+                stContainer.addView(options.stateView);
+            }
+            options.init(stateView);
         }
-        options.init();
     }
 
     private String str(@StringRes int resId) {

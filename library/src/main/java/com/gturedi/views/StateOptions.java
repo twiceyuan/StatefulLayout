@@ -19,10 +19,6 @@ public abstract class StateOptions implements Serializable {
     protected void init(View rootView) {
     }
 
-    void init() {
-        init(stateView);
-    }
-
     public View rootView() {
         return stateView;
     }
